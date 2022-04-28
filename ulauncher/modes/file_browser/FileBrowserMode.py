@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from typing import List
+from os.path import basename, dirname, isdir, join
+from ulauncher.utils.fold_user_path import fold_user_path
 import gi
 gi.require_version('Gdk', '3.0')
 # pylint: disable=wrong-import-position
@@ -79,15 +81,24 @@ class FileBrowserMode(BaseMode):
         keyval = event.get_keyval()
         keyname = Gdk.keyval_name(keyval[1])
         ctrl = event.state & Gdk.ModifierType.CONTROL_MASK
-        if keyname == 'BackSpace' and not ctrl and '/' in query and len(query.strip().rstrip('/')) > 1 and \
-           widget.get_position() == len(query) and not widget.get_selection_bounds():
+        #if keyname == 'BackSpace' and not ctrl and '/' in query and len(query.strip().rstrip('/')) > 1 and \
+        #   widget.get_position() == len(query) and not widget.get_selection_bounds():
             # stop key press event if:
             # it's a BackSpace key and
             # Ctrl modifier is not pressed and
             # cursor is at the last position and
             # path exists and it's a directory and
             # input text is not selected
+        if keyname == 'Left' and '/' in query and len(query.strip().rstrip('/')) > 1:
             widget.emit_stop_by_name('key-press-event')
             return SetUserQueryAction(os.path.join(Path(query).parent, ''))
+
+        if keyname == 'Right':
+            results_nav = widget.get_toplevel().results_nav
+            if results_nav != None and results_nav.selected != None:
+                ls = self.handle_query(query)
+                path = join(fold_user_path(ls[results_nav.selected].path), '')
+                if isdir(path):
+                    return SetUserQueryAction(path)
 
         return DoNothingAction()

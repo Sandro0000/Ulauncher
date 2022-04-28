@@ -28,8 +28,8 @@ class FileBrowserResult(SmallResult):
 
     def on_enter(self, _):
         self._file_queries.save_query(self.path)
-        if isdir(self.path):
-            return SetUserQueryAction(join(fold_user_path(self.path), ''))
+        #if isdir(self.path):
+        #    return SetUserQueryAction(join(fold_user_path(self.path), ''))
 
         return OpenAction(self.path)
 
