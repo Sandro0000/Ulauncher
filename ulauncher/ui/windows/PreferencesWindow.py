@@ -95,6 +95,7 @@ class PreferencesWindow(Gtk.ApplicationWindow):
     def on_delete(self, *_):
         # Override default event when the user presses the close button in the menubar
         self.hide()
+        quit()
         return True
 
     def _init_webview(self):

@@ -87,6 +87,8 @@ class UlauncherWindow(Gtk.ApplicationWindow):
         self.connect('button-release-event', self.mouse_up_event)
         self.connect('motion_notify_event', self.mouse_move_event)
 
+        self.quit_on_lose_focus = True
+
         if self.settings.get_property('show-indicator-icon'):
             AppIndicator.get_instance(self).show()
 
@@ -110,10 +112,12 @@ class UlauncherWindow(Gtk.ApplicationWindow):
     # pylint: disable=unused-argument
     def on_mnu_about_activate(self, widget, data=None):
         """Display the about page for ulauncher."""
+        self.quit_on_lose_focus = False
         self.activate_preferences(page='about')
 
     def on_mnu_preferences_activate(self, widget, data=None):
         """Display the preferences window for ulauncher."""
+        self.quit_on_lose_focus = False
         self.activate_preferences(page='preferences')
 
     def on_preferences_destroyed(self, widget, data=None):
@@ -131,6 +135,7 @@ class UlauncherWindow(Gtk.ApplicationWindow):
         # when user hits Alt+key combination or changes input source, etc.
         self.is_focused = False
         timer(0.07, lambda: self.is_focused or self.hide())
+        
 
     def on_focus_in_event(self, *args):
         if self.settings.get_property('grab-mouse-pointer'):
@@ -341,6 +346,8 @@ class UlauncherWindow(Gtk.ApplicationWindow):
         if self.settings.get_property('grab-mouse-pointer'):
             self.get_pointer_device().ungrab(0)
         super().hide(*args, **kwargs)
+        if self.quit_on_lose_focus:        
+            quit()
 
     def get_pointer_device(self):
         return (self
