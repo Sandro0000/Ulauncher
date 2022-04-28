@@ -35,9 +35,11 @@ class RunScriptAction(BaseAction):
         try:
             os.chmod(file.name, 0o777)
             logger.debug('Running a script from %s', file.name)
-            output = subprocess.check_output([f"{file.name} {self.args}"], shell=True).decode('utf-8')
-            logger.debug("Script action output:\n%s", output)
+            #output = subprocess.check_output([f"{file.name} {self.args}"], shell=True).decode('utf-8')
+            subprocess.Popen(["%s %s" % (file.name, self.args)], shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+            #logger.debug("Script action output:\n%s", output)
             self.remove_temp_file(file.name)
+            quit()
         except Exception:
             self.remove_temp_file(file.name)
             raise
