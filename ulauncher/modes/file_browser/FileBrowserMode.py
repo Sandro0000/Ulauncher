@@ -89,16 +89,22 @@ class FileBrowserMode(BaseMode):
             # cursor is at the last position and
             # path exists and it's a directory and
             # input text is not selected
-        if keyname == 'Left' and '/' in query and len(query.strip().rstrip('/')) > 1:
-            widget.emit_stop_by_name('key-press-event')
-            return SetUserQueryAction(os.path.join(Path(query).parent, ''))
+        if keyname == 'Left' and '/' in query and widget.get_position() == len(query):
+            if query == '~/':
+                widget.emit_stop_by_name('key-press-event')
+                return SetUserQueryAction(os.path.join('/home/', ''))
+            elif len(query.strip().rstrip('/')) > 1:
+                widget.emit_stop_by_name('key-press-event')
+                return SetUserQueryAction(os.path.join(Path(query).parent, ''))
 
-        if keyname == 'Right':
+        if keyname == 'Right' and widget.get_position() == len(query):
+            widget.emit_stop_by_name('key-press-event')
             results_nav = widget.get_toplevel().results_nav
             if results_nav != None and results_nav.selected != None:
                 ls = self.handle_query(query)
-                path = join(fold_user_path(ls[results_nav.selected].path), '')
+                #path = join(fold_user_path(ls[results_nav.selected].path), '')
+                path = join(ls[results_nav.selected].path, '')
                 if isdir(path):
-                    return SetUserQueryAction(path)
+                    return SetUserQueryAction(join(fold_user_path(path), ''))
 
         return DoNothingAction()

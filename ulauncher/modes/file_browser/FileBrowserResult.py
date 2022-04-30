@@ -1,6 +1,6 @@
 from os.path import basename, dirname, isdir, join
 from ulauncher.utils.fold_user_path import fold_user_path
-from ulauncher.api import SmallResult
+from ulauncher.api import Result
 from ulauncher.api.shared.action.OpenAction import OpenAction
 from ulauncher.api.shared.action.SetUserQueryAction import SetUserQueryAction
 from ulauncher.modes.file_browser.FileQueries import FileQueries
@@ -9,7 +9,7 @@ from ulauncher.modes.file_browser.alt_menu.OpenFolderItem import OpenFolderItem
 from ulauncher.modes.file_browser.get_icon_from_path import get_icon_from_path
 
 
-class FileBrowserResult(SmallResult):
+class FileBrowserResult(Result):
     highlightable = True
 
     """
